@@ -5,8 +5,10 @@ namespace ContactManagement.DatabaseContext;
 
 public class ContactContext : DbContext
 {
-    public ContactContext(DbContextOptions<ContactContext> options) : base(options)
+    private IConfiguration _configuration { get; }
+    public ContactContext(DbContextOptions<ContactContext> options, IConfiguration configuration) : base(options)
     {
+         _configuration = configuration;
     }
 
     public DbSet<ContactModel> Contacts { get; set; }
@@ -17,9 +19,15 @@ public class ContactContext : DbContext
             new ContactModel
             {
                 ContactId = Guid.NewGuid().ToString(),
-                Name = "William",
-                Email = "pramodnaik221@gmail.com"
+                Name = "Pramod",
+                Email = "pramodnaik221@gmail.com",
+                PhoneNumber = "9482022134"
             }
         );
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseInMemoryDatabase(_configuration["ConnectionString"]);
     }
 }

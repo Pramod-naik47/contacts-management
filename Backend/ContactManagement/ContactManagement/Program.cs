@@ -14,7 +14,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //regstering inmemory db context
-builder.Services.AddDbContext<ContactContext>(option => option.UseInMemoryDatabase("Contacts"));
+builder.Services.AddDbContext<ContactContext>(option => option.UseInMemoryDatabase(builder.Configuration["ConnectionString"]));
 
 //registering services
 builder.Services.AddScoped<IContact, ContactService>();
