@@ -19,8 +19,20 @@ builder.Services.AddDbContext<ContactContext>(option => option.UseInMemoryDataba
 //registering services
 builder.Services.AddScoped<IContact, ContactService>();
 
-var app = builder.Build();
+//Adding cors
+builder.Services.AddCors((setup) =>
+{
+    setup.AddPolicy("default", (options) =>
+    {
+        options.WithOrigins("http://localhost:3000")
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .AllowCredentials();
+    });
+});
 
+var app = builder.Build();
+app.UseCors("default");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
