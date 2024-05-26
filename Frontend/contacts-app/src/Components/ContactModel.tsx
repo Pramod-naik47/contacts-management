@@ -6,7 +6,6 @@ import {
   ModalHeader,
   ModalCloseButton,
   ModalBody,
-  ModalFooter,
   Button,
   Stack,
   useDisclosure,
@@ -16,10 +15,31 @@ import { ContactModelContent } from "./ContactModelContent";
 import { MdCreate } from "react-icons/md";
 import axios from "axios";
 import { BASE_URL } from "../utilities/Constants";
+import { UseContactContext } from "../utilities/ContactContext";
 
 export const ContactModel: FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast()
+  const { setContacts } = UseContactContext();
+
+  const GetContacts = async () => {
+    await axios.get(BASE_URL+"Contacts/GetContactList").
+    then(res => {
+        if (res.data) {
+            setContacts(res.data);
+        } else {
+            setContacts([]);
+        }
+    }).catch (() => {
+        toast({
+            title: "Something went wrong!!!!",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top-right",
+          });
+    })
+}
 
   const SubmitHandler = async (name : string, email: string, number: string, address : string) => {
         await axios.post(
@@ -40,6 +60,8 @@ export const ContactModel: FC = () => {
                 position: "top-right",
               });
             onClose();
+            GetContacts();
+
         }).catch(e => {
             toast({
                 title: "Something went wrong!!!!",
