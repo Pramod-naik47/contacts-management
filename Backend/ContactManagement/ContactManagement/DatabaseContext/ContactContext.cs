@@ -21,7 +21,8 @@ public class ContactContext : DbContext
                 ContactId = Guid.NewGuid().ToString(),
                 Name = "Pramod",
                 Email = "pramodnaik221@gmail.com",
-                PhoneNumber = "9482022134"
+                PhoneNumber = "9482022134",
+                Address = "Chilimbi"
             }
         );
     }

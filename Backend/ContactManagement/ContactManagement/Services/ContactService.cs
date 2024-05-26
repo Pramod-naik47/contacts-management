@@ -39,4 +39,41 @@ public class ContactService : IContact
 
         return null;
     }
+
+    public async Task<ContactModel?> GetContactById(string id)
+    {
+        if (!string.IsNullOrWhiteSpace(id))
+            return await _dbContext.Contacts.Where(c => c.ContactId == id).FirstOrDefaultAsync();
+
+        return null;
+    }
+
+    public async Task<string> UpdateContact(ContactModel model)
+    {
+        ContactModel? contact = await GetContactById(model.ContactId);
+
+        if (contact != null)
+        {
+            contact.Name = model.Name;
+            contact.Email = model.Email;
+            contact.PhoneNumber = model.PhoneNumber;
+            contact.Address = model.Address;
+            _dbContext.Contacts.Update(contact);
+            await _dbContext.SaveChangesAsync();
+            return "Contact updated sucessfully";
+        }
+        return "Contact not found";
+    }
+
+    public async Task<string> DeleteContact(string id)
+    {
+        ContactModel? contact = await GetContactById(id);
+        if ( contact != null )
+        {
+            _dbContext.Contacts.Remove(contact);
+            await _dbContext.SaveChangesAsync();
+            return "Contact Deleted Successfully";
+        }
+        return "Contact not found";
+    }
 }

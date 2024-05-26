@@ -43,4 +43,34 @@ public class ContactsController : ControllerBase
         }
         return BadRequest();
     }
+
+    /// <summary>
+    /// Update the given contact
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns>message wheather contact updated or not</returns>
+    [HttpPost("UpdateContact")]
+    public async Task<IActionResult> UpdateContact([FromBody] ContactModel model)
+    {
+        if (model != null)
+        {
+            return Ok(await _contact.UpdateContact(model));
+        }
+        return BadRequest();
+    }
+
+    /// <summary>
+    /// Delete the given contact by given Id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns>message wheather contact deleted or not</returns>
+    [HttpPost("DeleteContact/{id}")]
+    public async Task<IActionResult> DeleteContact([FromQuery]string id)
+    {
+        if (!string.IsNullOrWhiteSpace(id))
+        {
+            return Ok(await _contact.DeleteContact(id));
+        }
+        return BadRequest();
+    }
 }
