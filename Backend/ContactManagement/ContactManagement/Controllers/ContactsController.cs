@@ -64,8 +64,8 @@ public class ContactsController : ControllerBase
     /// </summary>
     /// <param name="id"></param>
     /// <returns>message wheather contact deleted or not</returns>
-    [HttpPost("DeleteContact/{id}")]
-    public async Task<IActionResult> DeleteContact([FromQuery]string id)
+    [HttpDelete("DeleteContact/{id}")]
+    public async Task<IActionResult> DeleteContact(string id)
     {
         if (!string.IsNullOrWhiteSpace(id))
         {
