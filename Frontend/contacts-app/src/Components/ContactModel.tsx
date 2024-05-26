@@ -1,68 +1,83 @@
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import {
-  FormControl,
-  FormLabel,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Textarea
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Stack,
+  useDisclosure,
+  useToast
 } from "@chakra-ui/react";
-import {
-  MdPhone,
-  MdOutlineEmail,
-} from "react-icons/md";
-import { BsPerson } from "react-icons/bs";
-
+import { ContactModelContent } from "./ContactModelContent";
+import { MdCreate } from "react-icons/md";
+import axios from "axios";
+import { BASE_URL } from "../utilities/Constants";
 
 export const ContactModel: FC = () => {
-  const [name, setName] = useState();
-  const [email, setEmail] = useState();
-  const [number, setNumber] = useState();
-  const [address, setAddress] = useState();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast()
 
+  const SubmitHandler = async (name : string, email: string, number: string, address : string) => {
+        await axios.post(
+            BASE_URL + "Contacts/AddContact",
+            {
+                name : name,
+                email: email,
+                phoneNumber: number,
+                address: address
+            }
+            
+        ).then((res) => {
+            toast({
+                title: res.data,
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+                position: "top-right",
+              });
+            onClose();
+        }).catch(e => {
+            toast({
+                title: "Something went wrong!!!!",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "top-right",
+              });
+        })
+  }
   return (
     <>
-      <FormControl id="name">
-        <FormLabel>Name</FormLabel>
-        <InputGroup borderColor="#E0E1E7">
-          <InputLeftElement
-            pointerEvents="none"
-            children={<BsPerson color="gray.800" />}
-          />
-          <Input type="text" size="md" />
-        </InputGroup>
-      </FormControl>
-
-      <FormControl id="email">
-        <FormLabel>Mail</FormLabel>
-        <InputGroup borderColor="#E0E1E7">
-          <InputLeftElement
-            pointerEvents="none"
-            children={<MdOutlineEmail color="gray.800" />}
-          />
-          <Input type="text" size="md" />
-        </InputGroup>
-      </FormControl>
-      <FormControl id="number">
-        <FormLabel>Phone</FormLabel>
-        <InputGroup borderColor="#E0E1E7">
-          <InputLeftElement
-            pointerEvents="none"
-            children={<MdPhone color="gray.800" />}
-          />
-          <Input type="text" size="md" />
-        </InputGroup>
-      </FormControl>
-      <FormControl id="address">
-        <FormLabel>Address</FormLabel>
-        <Textarea
-          borderColor="gray.300"
-          _hover={{
-            borderRadius: "gray.300",
-          }}
-          placeholder="message"
-        />
-      </FormControl>
+    <Stack
+        direction="row"
+        spacing={4}
+        display="flex"
+        justifyContent="flex-end"
+        p={2}
+      >
+        <Button
+          leftIcon={<MdCreate />}
+          colorScheme="teal"
+          variant="solid"
+          onClick={onOpen}
+        >
+          Create
+        </Button>
+      </Stack>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Create Contacts</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <ContactModelContent submitHandler={SubmitHandler} onClose={onClose} />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </>
   );
 };
