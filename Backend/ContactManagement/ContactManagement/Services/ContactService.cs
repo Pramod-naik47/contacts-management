@@ -13,14 +13,23 @@ public class ContactService : IContact
         _dbContext = context;
     }
 
-    //NOTE:: always return tru from boolean return type because my middleware is taking care of exceptions.
-
+    /// <summary>
+    /// Get the list of contacts
+    /// </summary>
+    /// <returns>List of contacts</returns>
     public async Task<IEnumerable<ContactModel>> GetContactsList()
     {
         return await _dbContext.Contacts.ToListAsync();
     }
+
+    /// <summary>
+    /// Create new contacts
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns>message</returns>
     public async Task<string> AddContact(ContactModel model)
     {
+        //Check before creating wheather contact exist or not
         ContactModel? contact = await GetContact(model.PhoneNumber, model.Email);
         if (contact == null)
         {
@@ -32,6 +41,12 @@ public class ContactService : IContact
         return "Contact with same name and email already exist";
     }
 
+    /// <summary>
+    /// Check the given phone number and email combination exist in our db.
+    /// </summary>
+    /// <param name="phoneNumber"></param>
+    /// <param name="email"></param>
+    /// <returns>contacts if exist or null</returns>
     public async Task<ContactModel?> GetContact(string phoneNumber, string email)
     {
         if (!string.IsNullOrWhiteSpace(phoneNumber) && !string.IsNullOrWhiteSpace(email))
@@ -40,6 +55,11 @@ public class ContactService : IContact
         return null;
     }
 
+    /// <summary>
+    /// Get the contact by id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns> contact object</returns>
     public async Task<ContactModel?> GetContactById(string id)
     {
         if (!string.IsNullOrWhiteSpace(id))
@@ -48,8 +68,14 @@ public class ContactService : IContact
         return null;
     }
 
+    /// <summary>
+    /// Update the given contact
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns> messsage</returns>
     public async Task<string> UpdateContact(ContactModel model)
     {
+        //Check before the given contact exist or not
         ContactModel? contact = await GetContactById(model.ContactId);
 
         if (contact != null)
@@ -65,8 +91,14 @@ public class ContactService : IContact
         return "Contact not found";
     }
 
+    /// <summary>
+    /// Delete the given contact
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns>message</returns>
     public async Task<string> DeleteContact(string id)
     {
+        //Check before given contact exist in our db.
         ContactModel? contact = await GetContactById(id);
         if ( contact != null )
         {

@@ -31,7 +31,16 @@ builder.Services.AddCors((setup) =>
     });
 });
 
+
 var app = builder.Build();
+
+//Creatingsome initial data
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ContactContext>();
+    context.Database.EnsureCreated();  // Ensure the database is created
+}
+
 app.UseCors("default");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

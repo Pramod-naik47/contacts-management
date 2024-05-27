@@ -5,30 +5,33 @@ namespace ContactManagement.DatabaseContext;
 
 public class ContactContext : DbContext
 {
-    private IConfiguration _configuration { get; }
-    public ContactContext(DbContextOptions<ContactContext> options, IConfiguration configuration) : base(options)
+    public ContactContext(DbContextOptions<ContactContext> options) : base(options)
     {
-         _configuration = configuration;
     }
 
     public DbSet<ContactModel> Contacts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+        //Some data on startup
         modelBuilder.Entity<ContactModel>().HasData(
             new ContactModel
             {
                 ContactId = Guid.NewGuid().ToString(),
-                Name = "Pramod",
-                Email = "pramodnaik221@gmail.com",
-                PhoneNumber = "9482022134",
-                Address = "Chilimbi"
+                Name = "Jhon",
+                Email = "jhon@gmail.com",
+                PhoneNumber = "8956857456",
+                Address = "Canada"
+            },
+            new ContactModel
+            {
+                ContactId = Guid.NewGuid().ToString(),
+                Name = "Erik",
+                Email = "erik@gmail.com",
+                PhoneNumber = "8965845862",
+                Address = "Maxico"
             }
         );
-    }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseInMemoryDatabase(_configuration["ConnectionString"]);
     }
 }
