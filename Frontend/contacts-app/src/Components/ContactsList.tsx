@@ -79,11 +79,18 @@ const UpdateHandler = (item : Item) =>{
     setItem(item);
 }
 
+const SubmitHandler = () => {
+    setIsUpdate(false);
+    onOpen();
+}
+
   return (
     <>
-    <Stack
+      <ContactModel isOpen={isOpen} onOpen={onOpen} onClose={onClose} item={item} isUpdate={isUpdate} />
+      <Box m={{ sm: 4, md: 16, lg: 10 }}>
+      <Stack
         direction="row"
-        spacing={4}
+        //spacing={4}
         display="flex"
         justifyContent="flex-end"
         p={2}
@@ -92,13 +99,11 @@ const UpdateHandler = (item : Item) =>{
           leftIcon={<MdCreate />}
           colorScheme="teal"
           variant="solid"
-          onClick={onOpen}
+          onClick={() => SubmitHandler()}
         >
           Create
         </Button>
       </Stack>
-      <ContactModel isOpen={isOpen} onOpen={onOpen} onClose={onClose} item={item} isUpdate={isUpdate} />
-      <Box m={{ sm: 4, md: 16, lg: 10 }}>
         <TableContainer>
           <Table variant="striped" colorScheme="teal" color="black">
             <TableCaption>Contacts List</TableCaption>

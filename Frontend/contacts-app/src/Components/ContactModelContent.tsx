@@ -8,8 +8,7 @@ import {
   Textarea,
   useToast,
   Button,
-  Stack,
-  useNumberInput,
+  Stack
 } from "@chakra-ui/react";
 import { MdPhone, MdOutlineEmail } from "react-icons/md";
 import { BsPerson } from "react-icons/bs";
@@ -31,12 +30,18 @@ export const ContactModelContent: FC<ContactModelContentProps> = ({
   const toast = useToast();
 
   useEffect(() => {
-    if(item) {
+    if(item && isUpdate) {
       setName(item?.name);
       setEmail(item?.email);
       setNumber(item?.phoneNumber);
       setAddress(item?.address);
       setId(item.contactId);
+    } else {
+      setName(undefined);
+      setEmail(undefined);
+      setNumber(undefined);
+      setAddress(undefined);
+      setId(undefined);
     }
   },[item])
 
