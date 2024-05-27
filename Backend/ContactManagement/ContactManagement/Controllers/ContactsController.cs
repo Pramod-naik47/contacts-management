@@ -49,7 +49,7 @@ public class ContactsController : ControllerBase
     /// </summary>
     /// <param name="model"></param>
     /// <returns>message wheather contact updated or not</returns>
-    [HttpPost("UpdateContact")]
+    [HttpPut("UpdateContact")]
     public async Task<IActionResult> UpdateContact([FromBody] ContactModel model)
     {
         if (model != null)

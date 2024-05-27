@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import {
   FormControl,
   FormLabel,
@@ -9,31 +9,37 @@ import {
   useToast,
   Button,
   Stack,
+  useNumberInput,
 } from "@chakra-ui/react";
 import { MdPhone, MdOutlineEmail } from "react-icons/md";
 import { BsPerson } from "react-icons/bs";
-
-interface ContactModelContentProps {
-  submitHandler: (
-    name: string,
-    email: string,
-    number: string,
-    address: string
-  ) => void;
-  onClose: () => void;
-}
+import { ContactModelContentProps } from "../Instances/ContactModelContent.Instance";
 
 export const ContactModelContent: FC<ContactModelContentProps> = ({
   submitHandler,
   onClose,
+  item,
+  isUpdate,
+  updateHandler,
 }) => {
   const [name, setName] = useState<string>();
   const [email, setEmail] = useState<string>();
   const [number, setNumber] = useState<string>();
   const [address, setAddress] = useState<string>();
+  const [id, setId] = useState<string>();
   //To display toast message
   const toast = useToast();
-  
+
+  useEffect(() => {
+    if(item) {
+      setName(item?.name);
+      setEmail(item?.email);
+      setNumber(item?.phoneNumber);
+      setAddress(item?.address);
+      setId(item.contactId);
+    }
+  },[item])
+
   return (
     <>
       <form
@@ -48,8 +54,31 @@ export const ContactModelContent: FC<ContactModelContentProps> = ({
               position: "top-right",
             });
             return;
+          } else if (number.length !== 10) {
+            toast({
+              title: "Please enter valid phone number",
+              status: "warning",
+              duration: 5000,
+              isClosable: true,
+              position: "top-right",
+            });
+            return;
+          } else if (number.length !== 10) {
+            toast({
+              title: "Please enter valid phone number",
+              status: "warning",
+              duration: 5000,
+              isClosable: true,
+              position: "top-right",
+            });
+            return;
           }
-          submitHandler(name, email, number, address);
+          if (!isUpdate) {
+            submitHandler(name, email, number, address);
+          } else {
+            updateHandler(name, email, number, address, id);
+          }
+         
         }}
       >
         <FormControl id="name">
@@ -62,6 +91,7 @@ export const ContactModelContent: FC<ContactModelContentProps> = ({
             <Input
               type="text"
               size="md"
+              value={name}
               onChange={(e) => setName(e.target.value)}
             />
           </InputGroup>
@@ -77,6 +107,7 @@ export const ContactModelContent: FC<ContactModelContentProps> = ({
             <Input
               type="email"
               size="md"
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </InputGroup>
@@ -91,6 +122,7 @@ export const ContactModelContent: FC<ContactModelContentProps> = ({
             <Input
               type="number"
               size="md"
+              value={number}
               onChange={(e) => setNumber(e.target.value)}
             />
           </InputGroup>
@@ -103,6 +135,7 @@ export const ContactModelContent: FC<ContactModelContentProps> = ({
               borderRadius: "gray.300",
             }}
             placeholder="message"
+            value={address}
             onChange={(e) => setAddress(e.target.value)}
           />
         </FormControl>

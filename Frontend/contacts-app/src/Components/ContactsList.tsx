@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import {
   Box,
   TableContainer,
@@ -11,17 +11,24 @@ import {
   Td,
   IconButton,
   useToast,
+  Stack,
+  Button,
+  useDisclosure
 } from "@chakra-ui/react";
 import { ContactModel } from "./ContactModel";
 import { UseContactContext } from "../utilities/ContactContext";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import axios from "axios";
 import { BASE_URL } from "../utilities/Constants";
+import { MdCreate } from "react-icons/md";
+import { Item } from "../Instances/ContactContext.Instance";
 
 export const ContactList: FC = () => {
   const { contacts, setContacts } = UseContactContext();
   const toast = useToast();
-
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isUpdate, setIsUpdate] = useState<boolean>(false);
+  const [item, setItem] = useState<any>();
 
   const ContactDeleteHandler = async (contactId: string) => {
     await axios
@@ -37,7 +44,6 @@ export const ContactList: FC = () => {
         GetContacts();
       })
       .catch((e) => {
-        console.log(e);
         toast({
           title: "Something went wrong",
           status: "error",
@@ -67,9 +73,31 @@ export const ContactList: FC = () => {
     })
 }
 
+const UpdateHandler = (item : Item) =>{
+    onOpen();
+    setIsUpdate(true);
+    setItem(item);
+}
+
   return (
     <>
-      <ContactModel />
+    <Stack
+        direction="row"
+        spacing={4}
+        display="flex"
+        justifyContent="flex-end"
+        p={2}
+      >
+        <Button
+          leftIcon={<MdCreate />}
+          colorScheme="teal"
+          variant="solid"
+          onClick={onOpen}
+        >
+          Create
+        </Button>
+      </Stack>
+      <ContactModel isOpen={isOpen} onOpen={onOpen} onClose={onClose} item={item} isUpdate={isUpdate} />
       <Box m={{ sm: 4, md: 16, lg: 10 }}>
         <TableContainer>
           <Table variant="striped" colorScheme="teal" color="black">
@@ -103,6 +131,7 @@ export const ContactList: FC = () => {
                         aria-label="Edit item"
                         icon={<EditIcon />}
                         colorScheme="teal"
+                        onClick={() => UpdateHandler(item)}
                       />
                     </Td>
                   </Tr>

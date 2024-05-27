@@ -3,23 +3,8 @@ import { useToast } from "@chakra-ui/react";
 import React, { FC, ReactNode, createContext, useContext, useState } from "react";
 import axios from 'axios';
 import { BASE_URL } from "./Constants";
+import { Item, ContactContextProps, ContactContextType } from "../Instances/ContactContext.Instance";
 
-interface Item {
-  contactId: string;
-  name: string;
-  email: string;
-  phoneNumber: string;
-  address: string;
-}
-
-interface ContactContextProps {
-    children: ReactNode;
-}
-
-interface ContactContextType {
-  contacts: Item[];
-  setContacts: React.Dispatch<React.SetStateAction<Item[]>>;
-}
 
 const ContactContext = createContext<ContactContextType>({} as ContactContextType);
 
